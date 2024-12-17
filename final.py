@@ -26,7 +26,7 @@ class Admin(Restaurant):
                 self.food_items.remove(item)
 
     def create_customer_account(self,name,email,address):
-        customer_info = {"name" : name, "email" : email, "address" : address, "balance" : 0}
+        customer_info = {"name" : name, "email" : email, "address" : address, "balance" : 0, "orders" : []}
         self.customers_account.append(customer_info)
     
     def show_all_customers(self):
@@ -40,8 +40,6 @@ class Admin(Restaurant):
                 self.customers_account.remove(account)
 
 class Customer(Restaurant):
-    def __init__(self):
-        self.order = []
 
     def view_balance(self,customer_name):
         for customer in self.customers_account:
@@ -62,22 +60,25 @@ class Customer(Restaurant):
                 for item in self.food_items:
                     if item['name'] == item_name:
                         if item['price'] <= customer['balance']:
-                            self.order.append(item)
+                            customer['orders'].append(item)
                             customer['balance'] -= item['price']
                             break
                         else:
                             print(f"Sorry!! Item price is: {item['price']}$ but you have: {customer['balance']}$")
+                            break
                 break
 
     
-    def view_past_orders(self):
-        if len(self.order) >= 1:
-            print("Your Previous Orders:")
-            print("Item name:\tPrice:")
-            for item in self.order:
-                print(f'{item['name']}\t\t{item['price']}$')
-        else:
-            print("You didn't Order anything Yet!!")
+    def view_past_orders(self,customer_name):
+        for customer in self.customers_account:
+            if customer['name'] == customer_name:
+                if len(customer['orders']) >= 1:
+                    print("Your Previous Orders:")
+                    print("Item name:\tPrice:")
+                    for item in customer['orders']:
+                        print(f'{item['name']}\t\t{item['price']}$')
+                else:
+                    print("You didn't Order anything Yet!!")
 
 
 def admin_menu():
@@ -152,7 +153,7 @@ def customer_menu(customer_name):
             item_name = input('Enter item name: ')
             customer.place_order(customer_name,item_name)
         elif option == 5:
-            customer.view_past_orders()
+            customer.view_past_orders(customer_name)
         elif option == 6:
             break
         else:
@@ -187,60 +188,4 @@ while True:
         break
     else:
         print("Invalid option choice!! Please Insert the correct one.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# admin = Admin()
-# admin.add_food_item("Apple",15)
-# admin.add_food_item("Coconut",90)
-# admin.add_food_item("Orange",25)
-# admin.add_food_item("Banana",15)
-# admin.add_food_item("Mango",8)
-
-# admin.create_customer_account("Rohim","rohim@gmail.com","Dhaka")
-# admin.create_customer_account("Korim","korim@gmail.com","Khulna")
-# admin.create_customer_account("Sojib","sojib@gmail.com","Borishal")
-# admin.create_customer_account("Ratul","ratul@gmail.com","Dinajpur")
-
-
-# # admin.show_food_items()
-# # admin.remove_food_item("Orange")
-# # admin.show_food_items()
-
-# # admin.show_all_customers()
-# # admin.remove_customer_account("sojib@gmail.com")
-# # admin.show_all_customers()
-
-# customer1 = Customer()
-# customer2 = Customer()
-# customer1.view_balance("Ratul")
-# customer1.add_balance("Ratul",30)
-# customer1.add_balance("Ratul",50)
-
-# customer1.place_order("Ratul","Orange")
-# customer1.place_order("Ratul","Orange")
-# customer1.place_order("Ratul","Orange")
-# customer1.place_order("Ratul","Orange")
-# customer1.view_past_orders()
-# customer1.view_balance("Ratul")
-
-
-
-
-
 
