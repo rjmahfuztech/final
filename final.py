@@ -7,28 +7,66 @@ class Restaurant:
         print("Name:\tPrice:")
         for item in self.food_items:
             print(f'{item['name']}\t{item['price']}$')
+
+    def find_food(self,name):
+        for item in self.food_items:
+            if item['name'] == name:
+                return item
+        return None
+    
+    def find_customer(self,name):
+        for customer in self.customers_account:
+            if customer['name'] == name or customer['email'] == name:
+                return customer
+        return None
     
 class Admin(Restaurant):
     admin_name = 'Admin'
+
+    # def find_food(self,name):
+    #     for item in self.food_items:
+    #         if item['name'] == name:
+    #             return item
+    #     return None
+    
+    # def find_customer(self,name):
+    #     for customer in self.customers_account:
+    #         if customer['name'] == name or customer['email'] == name:
+    #             return customer
+    #     return None
 
     def add_food_item(self, name,price):
         food_item = {"name" : name, "price": price}
         self.food_items.append(food_item)
         print(f"Item: '{name}' added successfully")
     
+    # def update_food_item(self,name,price):
+    #     for item in self.food_items:
+    #         if item['name'] == name:
+    #             item['price'] = price
+    #             print(f"Item price: '{price}$' updated successfully")
+    #             break
     def update_food_item(self,name,price):
-        for item in self.food_items:
-            if item['name'] == name:
-                item['price'] = price
-                print(f"Item price: '{price}$' updated successfully")
-                break
+        item = self.find_food(name)
+        if item:
+            item['price'] = price
+            print(f"Item price: '{price}$' updated successfully")
+        else:
+            print(f"Sorry!! Item: '{name}' not found for update!")
 
+    # def remove_food_item(self,name):
+    #     for item in self.food_items:
+    #         if item['name'] == name:
+    #             self.food_items.remove(item)
+    #             print(f"Item: '{name}' removed successfully")
+    #             break
     def remove_food_item(self,name):
-        for item in self.food_items:
-            if item['name'] == name:
-                self.food_items.remove(item)
-                print(f"Item: '{name}' removed successfully")
-                break
+        item = self.find_food(name)
+        if item:
+            self.food_items.remove(item)
+            print(f"Item: '{name}' removed successfully")
+        else:
+            print(f"Sorry!! Item: '{name}' not found for remove!")
 
 
     def create_customer_account(self,name,email,address):
@@ -41,53 +79,90 @@ class Admin(Restaurant):
         for customer in self.customers_account:
             print(f'{customer['name']}\t{customer['email']}\t{customer['address']}')
 
+    # def remove_customer_account(self,email):
+    #     for account in self.customers_account:
+    #         if account['email'] == email:
+    #             self.customers_account.remove(account)
+    #             print(f"Customer account: '{account['name']}' removed successfully")
     def remove_customer_account(self,email):
-        for account in self.customers_account:
-            if account['email'] == email:
-                self.customers_account.remove(account)
-                print(f"Customer account: '{account['name']}' removed successfully")
+        account = self.find_customer(email)
+        if account:
+            self.customers_account.remove(account)
+            print(f"Customer account: '{account['name']}' removed successfully")
+        else:
+            print(f"Sorry!! Account: '{email}' not found for remove a customer!")
+
 
 class Customer(Restaurant):
 
+    # def view_balance(self,customer_name):
+    #     for customer in self.customers_account:
+    #         if customer['name'] == customer_name:
+    #             print(f"Welcome '{customer_name}' in your account!!!")
+    #             print(f'Your available balance is: {customer['balance']}$')
+    #             break
     def view_balance(self,customer_name):
-        for customer in self.customers_account:
-            if customer['name'] == customer_name:
-                print(f"Welcome '{customer_name}' in your account!!!")
-                print(f'Your available balance is: {customer['balance']}$')
-                break
+        customer = self.find_customer(customer_name)
+        print(f"Welcome '{customer_name}' in your account!!!")
+        print(f'Your available balance is: {customer['balance']}$')
     
+    # def add_balance(self,customer_name,amount):
+    #     for customer in self.customers_account:
+    #         if customer['name'] == customer_name:
+    #             customer['balance'] += amount
+    #             print(f"You add: {amount}$ and now your balance is: {customer['balance']}$")
+    #             break
     def add_balance(self,customer_name,amount):
-        for customer in self.customers_account:
-            if customer['name'] == customer_name:
-                customer['balance'] += amount
-                print(f"You add: {amount}$ and now your balance is: {customer['balance']}$")
+        customer = self.find_customer(customer_name)
+        customer['balance'] += amount
+        print(f"You add: {amount}$ and now your balance is: {customer['balance']}$")
     
+    # def place_order(self,customer_name,item_name):
+    #     for customer in self.customers_account:
+    #         if customer['name'] == customer_name:
+    #             for item in self.food_items:
+    #                 if item['name'] == item_name:
+    #                     if item['price'] <= customer['balance']:
+    #                         customer['orders'].append(item)
+    #                         customer['balance'] -= item['price']
+    #                         print(f"Your Order: '{item_name}' Placed Successfully!!")
+    #                         break
+    #                     else:
+    #                         print(f"Sorry!! Item price is: {item['price']}$ but you have: {customer['balance']}$")
+    #                         break
+    #             break
     def place_order(self,customer_name,item_name):
-        for customer in self.customers_account:
-            if customer['name'] == customer_name:
-                for item in self.food_items:
-                    if item['name'] == item_name:
-                        if item['price'] <= customer['balance']:
-                            customer['orders'].append(item)
-                            customer['balance'] -= item['price']
-                            print(f"Your Order: '{item_name}' Placed Successfully!!")
-                            break
-                        else:
-                            print(f"Sorry!! Item price is: {item['price']}$ but you have: {customer['balance']}$")
-                            break
-                break
-
+        customer = self.find_customer(customer_name)
+        item = self.find_food(item_name)
+        if item:
+            if item['price'] <= customer['balance']:
+                customer['orders'].append(item)
+                customer['balance'] -= item['price']
+                print(f"Your Order: '{item_name}' Placed Successfully!!")
+            else:
+                print(f"Sorry!! Item price is: {item['price']}$ but you have: {customer['balance']}$, Please recharge your account!")
+        else:
+            print(f"Sorry!! Item: '{item_name}' not found for placing an order!")
     
+    # def view_past_orders(self,customer_name):
+    #     for customer in self.customers_account:
+    #         if customer['name'] == customer_name:
+    #             if len(customer['orders']) >= 1:
+    #                 print("Your Previous Orders:")
+    #                 print("Item name:\tPrice:")
+    #                 for item in customer['orders']:
+    #                     print(f'{item['name']}\t\t{item['price']}$')
+    #             else:
+    #                 print("You didn't Order anything Yet!!")
     def view_past_orders(self,customer_name):
-        for customer in self.customers_account:
-            if customer['name'] == customer_name:
-                if len(customer['orders']) >= 1:
-                    print("Your Previous Orders:")
-                    print("Item name:\tPrice:")
-                    for item in customer['orders']:
-                        print(f'{item['name']}\t\t{item['price']}$')
-                else:
-                    print("You didn't Order anything Yet!!")
+        customer = self.find_customer(customer_name)
+        if len(customer['orders']) >= 1:
+            print("Your Previous Orders:")
+            print("Item name:\tPrice:")
+            for item in customer['orders']:
+                print(f'{item['name']}\t\t{item['price']}$')
+        else:
+            print("You didn't Order anything Yet!!")
 
 
 def admin_menu():
@@ -190,13 +265,20 @@ while True:
         else:
             print(f"Sorry '{admin_name}' you are no a Admin!!")
     elif option == 2:
+        # customer_name = input("Enter your name: ")
+        # flag = False
+        # for customer in admin.customers_account:
+        #     if customer['name'] == customer_name:
+        #         flag = True
+        #         break
+        # if flag == True:
+        #     customer_menu(customer_name)
+        # else:
+        #     print(f"Sorry '{customer_name}' you don't have any account!!")
+        #     print("Request to Admin for create a account for you!")
         customer_name = input("Enter your name: ")
-        flag = False
-        for customer in admin.customers_account:
-            if customer['name'] == customer_name:
-                flag = True
-                break
-        if flag == True:
+        customer = admin.find_customer(customer_name)
+        if customer:
             customer_menu(customer_name)
         else:
             print(f"Sorry '{customer_name}' you don't have any account!!")
@@ -205,4 +287,3 @@ while True:
         break
     else:
         print("Invalid option choice!! Please Insert the correct one.")
-
