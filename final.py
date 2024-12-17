@@ -3,7 +3,7 @@ class Restaurant:
     customers_account = []
     
     def show_food_items(self):
-        print("****Restaurant Menu****")
+        print("---- Restaurant Menu ----")
         print("Name:\tPrice:")
         for item in self.food_items:
             print(f'{item['name']}\t{item['price']}$')
@@ -14,20 +14,27 @@ class Admin(Restaurant):
     def add_food_item(self, name,price):
         food_item = {"name" : name, "price": price}
         self.food_items.append(food_item)
+        print(f"Item: '{name}' added successfully")
     
     def update_food_item(self,name,price):
         for item in self.food_items:
             if item['name'] == name:
                 item['price'] = price
+                print(f"Item price: '{price}$' updated successfully")
+                break
 
     def remove_food_item(self,name):
         for item in self.food_items:
             if item['name'] == name:
                 self.food_items.remove(item)
+                print(f"Item: '{name}' removed successfully")
+                break
+
 
     def create_customer_account(self,name,email,address):
         customer_info = {"name" : name, "email" : email, "address" : address, "balance" : 0, "orders" : []}
         self.customers_account.append(customer_info)
+        print(f"Customer account: '{name}' created successfully")
     
     def show_all_customers(self):
         print("Name:\tEmail:\t\tAddress:")
@@ -38,6 +45,7 @@ class Admin(Restaurant):
         for account in self.customers_account:
             if account['email'] == email:
                 self.customers_account.remove(account)
+                print(f"Customer account: '{account['name']}' removed successfully")
 
 class Customer(Restaurant):
 
@@ -62,6 +70,7 @@ class Customer(Restaurant):
                         if item['price'] <= customer['balance']:
                             customer['orders'].append(item)
                             customer['balance'] -= item['price']
+                            print(f"Your Order: '{item_name}' Placed Successfully!!")
                             break
                         else:
                             print(f"Sorry!! Item price is: {item['price']}$ but you have: {customer['balance']}$")
@@ -160,6 +169,12 @@ def customer_menu(customer_name):
             print("Invalid option choice!! Please Insert the correct one.")
 
 
+# Demo Food Items
+admin_access = Admin()
+admin_access.add_food_item('apple',20)
+admin_access.add_food_item('orange',35)
+admin_access.add_food_item('banana',12)
+
 while True:
     print("----- Restaurant Management System -----")
     print("1. Admin Login")
@@ -168,11 +183,12 @@ while True:
     admin = Admin()
     option = int(input("Select an option: "))
     if option == 1:
+        print("Please type: 'Admin' to get admin access")
         admin_name = input("Enter your name: ")
         if admin_name == admin.admin_name:
             admin_menu()
         else:
-            print(f"Sorry '{admin_name}' you don't have any account!!")
+            print(f"Sorry '{admin_name}' you are no a Admin!!")
     elif option == 2:
         customer_name = input("Enter your name: ")
         flag = False
@@ -184,6 +200,7 @@ while True:
             customer_menu(customer_name)
         else:
             print(f"Sorry '{customer_name}' you don't have any account!!")
+            print("Request to Admin for create a account for you!")
     elif option == 3:
         break
     else:
